@@ -1,65 +1,145 @@
-function bisection(a,b,f,error)
-  x = (a+b)/2
-  while abs(f(x)) > error
-    if f(a)*f(x) > 0
-      a = x
-    else 
-      b = x
-    end
-    x = (a+b)/2
+using .MathConstants:e
+
+#  Método do Ponto Fixo
+f(x) = e^x-x-2
+
+error = 10^-3
+
+function fixedpoint(a,g)
+  x = g(a)
+  while abs(x-a) > error
+    a = x
+    x = g(a)
   end
   return x
 end
 
-# Exercicio 3.2.1
-f(x) = sqrt(x) - cos(x)
-error = 10^-4
-r = bisection(0, 1, f, error)
+g(x) = log(x+2)
+r = fixedpoint(1,g)
 println(r)
 
-# Exercicio 3.2.2
-f(x) = 5*sin(x^2) - MathConstants.e^(x/10)
+g(x) = e^x-2
+r = fixedpoint(-1,g)
+println(r)
+
+#  Método de Newton-Raphson (Adaptação do Ponto fixo)
+g(x) = x-((e^x-x-2)/(e^x-1))
+r = fixedpoint(1,g)
+println(r)
+
+g(x) = e^x-2
+r = fixedpoint(-1,g)
+println(r)
+
+#  Método da Secante
+function secant(a,b)
+g(a,b) = (a*f(b)-b*f(a))/(f(b)-f(a))
+x = g(a,b)
+while abs(x-a) > error
+    a = b
+    b = x
+    x = g(a,b)
+  end
+  return x
+end
+
+r = secant(1,2)
+println(r)
+r = secant(-2,-1)
+println(r)
+println( )
+
+#  Os valores diferentes por causa do valor do erro estabelecido.
+
+# Exercício 3.3.1
+println("Exercício 3.3.1")
+f(x) = ln(x-2)
+error = 10^-8
+g(x) = MathConstants.e^(x)-2
+r = fixedpoint(1,g)
+println(r)
+println( )
+
+# Exercício 3.4.1
+println("Exercício  3.4.1")
+f(x) = cos(x) - x^2
 error = 10^-5
-r = bisection(0.4, 0.5, f, error)
+g(x) = x + ((cos(x) - x^2)/(sin(x)+2x))
+r = fixedpoint(1,g)
 println(r)
-r = bisection(1.7, 1.8, f, error)
-println(r)
-r = bisection(2.5, 2.6, f, error)
-println(r)
+println( )
 
-# Exercicio 3.2.8
+# Exercício 3.6.3
+println("Exercício  3.6.3")
+f(x) = MathConstants.e^(-x^2)/2
+r = secant(1,2)
+println(r)
+println( )
+
+# Exercício 3.6.4
+println("Exercício  3.6.4:")
 Ir = 10^-12
 T = 300
 k = 1.380649*(10^-23)
 q = 1.60217663*(10^-19)
 I(x) = Ir*(MathConstants.e^((x*q)/(k*T)) - 1)
 g(x,V,R) = R*I(x) + x - V
+dg(x,R) = R*dI(x) + 1
+d(x,R,f) = x - (f(x)/dg(x,R))
 error = 10^-3
+println("a)")
 # ((10^-12)*(e^((x*(1.60217663*10^-19))/((1.380649*10^-23)*(300)))-1))+x-30
 f(x) = g(x, 30, 1)
-r = bisection(0.8, 0.9, f, error)
+h(x) = d(x,1,f)
+r = fixedpoint(0.8,h,error)
+println(r)
+r = secant(0.8,0.9,h,error)
 println(r)
 # ((10^-12)*(e^((x*(1.60217663*10^-19))/((1.380649*10^-23)*(300)))-1))+x-3
+println("b)")
 f(x) = g(x, 3, 1)
-r = bisection(0.7, 0.8, f, error)
+h(x) = d(x,1,f)
+r = fixedpoint(0.7,h,error)
+println(r)
+r = secant(0.7,0.8,h,error)
 println(r)
 # (10*(10^-12)*(e^((x*(1.60217663*10^-19))/((1.380649*10^-23)*(300)))-1))+x-3
-f(x) = g(x, 3, 10)
-r = bisection(0.6, 0.7, f, error)
+println("c)")
+f(x) = g(x, 3, 1)
+h(x) = d(x,10,f)
+r = fixedpoint(0.6,h,error)
+println(r)
+r = secant(0.6,0.7,h,error)
 println(r)
 # ((10^-12)*(e^((x*(1.60217663*10^-19))/((1.380649*10^-23)*(300)))-1))+x-(300*10^-3)
-f(x) = g(x, (300*10^-3), 1)
-r = bisection(0.29, 0.31, f, error)
+println("d)")
+f(x) = g(x, 300, 1)
+h(x) = d(x,1,f)
+r = fixedpoint(0.29,h,error)
+println(r)
+r = secant(0.29,0.31,h,error)
 println(r)
 # ((10^-12)*(e^((x*(1.60217663*10^-19))/((1.380649*10^-23)*(300)))-1))+x-((-300)*10^-3)
-f(x) = g(x, ((-300)*10^-3), 1)
-r = bisection(-0.29, -0.31, f, error)
+println("e)")
+f(x) = g(x, -300, 1)
+h(x) = d(x,1,f)
+r = fixedpoint(-0.29,h,error)
+println(r)
+r = secant(-0.29,-0.31,h,error)
 println(r)
 # ((10^-12)*(e^((x*(1.60217663*10^-19))/((1.380649*10^-23)*(300)))-1))+x+30
+println("f)")
 f(x) = g(x, -30, 1)
-r = bisection(-29.9, -30.1, f, error)
+h(x) = d(x,1,f)
+r = fixedpoint(-0.29,h,error)
+println(r)
+r = secant(-29.9,-30.1,h,error)
 println(r)
 # (10*(10^-12)*(e^((x*(1.60217663*10^-19))/((1.380649*10^-23)*(300)))-1))+x+30
-f(x) = g(x, -30, 10)
-r = bisection(-29.9, -30.1, f, error)
+println("g)")
+f(x) = g(x, -30, 1)
+h(x) = d(x,10,f)
+r = fixedpoint(-29.9,h,error)
+println(r)
+r = secant(-29.9,-30.1,h,error)
 println(r)
