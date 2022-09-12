@@ -92,4 +92,6 @@ println(X)
 println( )
 
 println("Exercício 4.9.1")
-
+# Caso a
+# Caso b
+println("Exercício 4.9.2")
