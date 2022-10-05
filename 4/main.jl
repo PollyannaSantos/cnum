@@ -1,5 +1,8 @@
 using .MathConstants:e
 
+println("Aula 4")
+println(" ")
+
 #  Método do Ponto Fixo
 f(x) = e^x-x-2
 

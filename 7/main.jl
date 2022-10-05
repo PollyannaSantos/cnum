@@ -1,5 +1,8 @@
 using LinearAlgebra
 
+println("Aula 7")
+println(" ")
+
 function fixedpoint(a, g , error)
   x = g(a)
   while norm(x-a) > error

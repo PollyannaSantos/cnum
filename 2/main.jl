@@ -1,3 +1,6 @@
+println("Aula 2")
+println(" ")
+
 function e(x)
   termo = 1
   soma = 1

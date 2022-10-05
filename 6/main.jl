@@ -1,6 +1,8 @@
 using LinearAlgebra
 
 error = 10^-3
+println("Aula 6")
+println(" ")
 
 # Método de Jacobi
 
